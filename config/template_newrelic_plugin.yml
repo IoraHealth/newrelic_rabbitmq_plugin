@@ -1,0 +1,43 @@
+# Please make sure to update the license_key information with the license key for your New Relic
+# account.
+#
+#
+newrelic:
+  #
+  # Update with your New Relic account license key:
+  #
+  license_key: 'YOUR_LICENSE_KEY_HERE'
+  #
+  # Set to '1' for verbose output, remove for normal output.
+  # All output goes to stdout/stderr.
+  #
+  # verbose: 1
+
+  # Proxy configuration:
+  #proxy:
+  #  address: localhost
+  #  port: 8080
+  #  user: nil
+  #  password: nil
+
+#
+# Agent Configuration:
+#
+agents:
+  # this is where configuration for agents belongs
+  # this is where configuration for agents belongs
+  # Must enable rabbit management plugin
+  # Note: When monitoring multiple nodes you should use the real hostnames instead of localhost
+  # Uncomment the appropriate line for your version
+  # RabbitMQ Default URL version 3.0
+  #management_api_url: http://guest:guest@localhost:15672
+  # RabbitMQ Default URL versions prior to 3.0
+  #management_api_url: http://guest:guest@localhost:55672
+  #
+  # Set "debug: true" to see additional debug output
+  # Note: This logs the metrics locally and does not send data to new relic.
+  #debug: false
+  rabbitmq:
+  - uri: http://example.com:15672 # RabbitMQ managament URI
+    name: Production RabbitMQ # Name that will show up in NewRelic
+    debug: false
