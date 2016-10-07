@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   s.authors  = ["Joel Jensen"]
   s.email    = 'joel.jensen@iorahealth.com'
-  s.homepage = 'https://github.com/joeljensen/newrelic_rabbitmq_plugin'
+  s.homepage = 'https://github.com/iorahealth/newrelic_rabbitmq_plugin'
 
   all_files       = `git ls-files -z`.split("\x0")
   s.files         = all_files.grep(%r{^(bin|lib)/})
