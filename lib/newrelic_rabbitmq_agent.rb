@@ -1,5 +1,5 @@
 require_relative 'version'
-
+include NewRelicRabbitMQPlugin
 require 'uri'
 require 'cgi'
 require "newrelic_plugin"
