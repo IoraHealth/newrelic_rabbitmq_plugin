@@ -1,4 +1,5 @@
-include 'version'
+require_relative 'version'
+
 require 'uri'
 require 'cgi'
 require "newrelic_plugin"
