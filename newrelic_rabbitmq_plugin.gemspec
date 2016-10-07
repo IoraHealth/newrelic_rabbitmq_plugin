@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.9.3'
 
   s.name              = 'newrelic_rabbitmq_plugin'
-  s.version           = '1.0.1'
+  s.version           = '1.0.2'
   s.license           = 'MIT'
 
   s.summary     = "New Relic plugin for reporting RabbitMQ statistics"
