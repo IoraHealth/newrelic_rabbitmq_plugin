@@ -30,6 +30,6 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency('faraday',    "~> 0.9.0")
   s.add_runtime_dependency('faraday_middleware',  "~> 0.9.1")
-  s.add_runtime_dependency('newrelic_plugin', '~> 1.3', '>= 1.3.1')
+  s.add_runtime_dependency('newrelic_plugin')
 end
 
