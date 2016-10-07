@@ -1,6 +1,6 @@
+include 'version'
 require 'uri'
 require 'cgi'
-
 require "newrelic_plugin"
 require "faraday"
 require "faraday_middleware"
