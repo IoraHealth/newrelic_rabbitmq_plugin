@@ -6,7 +6,6 @@ require "faraday"
 require "faraday_middleware"
 
 module NewRelicRabbitMQPlugin
-  VERSION = '1.0.1'
 
   class Agent < NewRelic::Plugin::Agent::Base
     agent_guid "com.iora.newrelic_plugin.rabbitmq"
