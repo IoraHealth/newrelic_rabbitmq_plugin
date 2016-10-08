@@ -84,6 +84,14 @@ module NewrelicRabbitmqPlugin
       end
     end
 
+    def report_metric_check_debug(metricname, metrictype, metricvalue)
+      if "#{self.debug}" == "true"
+        puts("#{metricname}[#{metrictype}] : #{metricvalue}")
+      else
+        report_metric metricname, metrictype, metricvalue
+      end
+    end
+
     def conn
       @conn ||= Faraday.new(url: uri) do |conn|
         u = ::URI.parse(uri)
