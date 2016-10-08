@@ -1,4 +1,4 @@
-require 'version'
+require "newrelic_rabbitmq_plugin/version"
 require 'uri'
 require 'cgi'
 require "newrelic_plugin"
@@ -9,7 +9,7 @@ module NewRelicRabbitMQPlugin
   class Agent < NewRelic::Plugin::Agent::Base
     agent_guid "com.iora.newrelic_plugin.rabbitmq"
     agent_version NewRelicRabbitMQPlugin::VERSION
-    agent_config_options :name, :uri,:debug
+    agent_config_options :name, :uri, :debug
     agent_human_labels("RabbitMQ") do
       u = ::URI.parse(uri)
       name || "#{u.host}:#{u.port}"
