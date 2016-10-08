@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require "newrelic_rabbitmq_agent"
+require "newrelic_rabbitmq_plugin"
 
 require 'optparse'
 
@@ -30,4 +30,4 @@ end
 
 args = options.parse!(ARGV)
 
-NewRelicRabbitMQPlugin.run
+NewrelicRabbitmqPlugin.run

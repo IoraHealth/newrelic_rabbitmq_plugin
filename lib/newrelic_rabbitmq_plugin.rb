@@ -5,10 +5,10 @@ require "newrelic_plugin"
 require "faraday"
 require "faraday_middleware"
 
-module NewRelicRabbitMQPlugin
+module NewrelicRabbitmqPlugin
   class Agent < NewRelic::Plugin::Agent::Base
     agent_guid "com.iora.newrelic_plugin.rabbitmq"
-    agent_version NewRelicRabbitMQPlugin::VERSION
+    agent_version NewrelicRabbitmqPlugin::VERSION
     agent_config_options :name, :uri, :debug
     agent_human_labels("RabbitMQ") do
       u = ::URI.parse(uri)
@@ -105,3 +105,4 @@ module NewRelicRabbitMQPlugin
     NewRelic::Plugin::Run.setup_and_run
   end
 end
+

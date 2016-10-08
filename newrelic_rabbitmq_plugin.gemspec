@@ -1,33 +1,27 @@
 # coding: utf-8
-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'newrelic_rabbitmq_plugin/version'
 
-Gem::Specification.new do |s|
-  s.specification_version = 2 if s.respond_to? :specification_version=
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.rubygems_version = '2.2.2'
-  s.required_ruby_version = '>= 1.9.3'
+Gem::Specification.new do |spec|
+  spec.name          = "newrelic_rabbitmq_plugin"
+  spec.version       = NewrelicRabbitmqPlugin::VERSION
+  spec.authors       = ["Joel Jensen"]
+  spec.email         = ["joel.jensen@iorahealth.com"]
 
-  s.name              = 'newrelic_rabbitmq_plugin'
-  s.version           = NewRelicRabbitMQPlugin::VERSION
-  s.license           = 'MIT'
+  spec.summary       = %q{"New Relic plugin for reporting RabbitMQ statistics"}
+  spec.description   = %q{"New Relic plugin for reporting RabbitMQ statistics"}
+  spec.homepage      = "https://github.com/iorahealth/newrelic_rabbitmq_plugin"
+  spec.license       = "MIT"
 
-  s.summary     = "New Relic plugin for reporting RabbitMQ statistics"
-  s.description = "New Relic plugin for reporting RabbitMQ statistics"
-  s.authors  = ["Joel Jensen"]
-  s.email    = 'joel.jensen@iorahealth.com'
-  s.homepage = 'https://github.com/iorahealth/newrelic_rabbitmq_plugin'
-
-  all_files       = `git ls-files -z`.split("\x0")
-  s.files         = all_files.grep(%r{^(bin|lib)/})
-  s.executables   = all_files.grep(%r{^bin/}) { |f| File.basename(f) }
-  s.require_paths = ["lib"]
-
-  s.rdoc_options = ["--charset=UTF-8"]
-  s.add_runtime_dependency('faraday',    "~> 0.9.0")
-  s.add_runtime_dependency('faraday_middleware',  "~> 0.9.1")
-  s.add_runtime_dependency('newrelic_plugin')
+  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.require_paths = ["lib"]
+  spec.rdoc_options = ["--charset=UTF-8"]
+  spec.add_development_dependency "bundler", "~> 1.12"
+  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_runtime_dependency('faraday',    "~> 0.9.0")
+  spec.add_runtime_dependency('faraday_middleware',  "~> 0.9.1")
+  spec.add_runtime_dependency('newrelic_plugin')
 end
-
