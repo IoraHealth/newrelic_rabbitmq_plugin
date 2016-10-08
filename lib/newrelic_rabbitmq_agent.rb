@@ -5,7 +5,7 @@ require "newrelic_plugin"
 require "faraday"
 require "faraday_middleware"
 
-module NewrelicRabbitMQPlugin
+module NewRelicRabbitMQPlugin
   class Agent < NewRelic::Plugin::Agent::Base
     agent_guid "com.iora.newrelic_plugin.rabbitmq"
     agent_version NewRelicRabbitMQPlugin::VERSION
