@@ -48,7 +48,7 @@ module NewrelicRabbitmqPlugin
         report_metric_check_debug "Messages/Ack", "Messages/Second", @messages_acked.process(statistics.fetch("message_stats").fetch("ack"))
         report_metric_check_debug "Messages/Deliver", "Messages/Second", @messages_delivered.process(statistics.fetch("message_stats").fetch("deliver_get"))
         # report_metric_check_debug "Messages/Confirm", "Messages/Second", @messages_confirmed.process(statistics.fetch("message_stats").fetch("confirm"))
-        report_metric_check_debug "Message Rate/Return", "Messages/Second", @messages_confirmed.process(statistics.fetch("message_stats").fetch("return_unroutable")) 
+        # report_metric_check_debug "Message Rate/Return", "Messages/Second", @messages_confirmed.process(statistics.fetch("message_stats").fetch("return_unroutable")) 
         report_metric_check_debug "Messages/Redeliver", "Messages/Second", @messages_redelivered.process(statistics.fetch("message_stats").fetch("redeliver"))
         report_metric_check_debug "Messages/NoAck", "Messages/Second", @messages_noacked.process(statistics.fetch("message_stats").fetch("get_no_ack"))
 
