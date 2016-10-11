@@ -35,7 +35,7 @@ module NewrelicRabbitmqPlugin
         response = conn.get("/api/overview")
 
         statistics = response.body
-        puts statistics.inspect
+        puts statistics
 
         report_metric_check_debug "Queues/Queued", "Messages", statistics.fetch("queue_totals").fetch("messages")
         report_metric_check_debug "Queues/Ready", "Messages", statistics.fetch("queue_totals").fetch("messages_ready")
@@ -55,7 +55,7 @@ module NewrelicRabbitmqPlugin
 
         response = conn.get("/api/queues")
         statistics = response.body
-        p statistics.inspect
+        p statistics
         statistics.each do |q|
             next if q['name'].start_with?('amq.gen')
             # report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Messages/Ready', 'message', q.fetch("messages_ready")
