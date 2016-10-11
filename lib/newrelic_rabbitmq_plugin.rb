@@ -35,6 +35,7 @@ module NewrelicRabbitmqPlugin
         response = conn.get("/api/overview")
 
         statistics = response.body
+        puts statistics.inspect
 
         report_metric_check_debug "Queues/Queued", "Messages", statistics.fetch("queue_totals").fetch("messages")
         report_metric_check_debug "Queues/Ready", "Messages", statistics.fetch("queue_totals").fetch("messages_ready")
@@ -52,12 +53,12 @@ module NewrelicRabbitmqPlugin
         report_metric_check_debug "Messages/Redeliver", "Messages/Second", @messages_redelivered.process(statistics.fetch("message_stats").fetch("redeliver"))
         # report_metric_check_debug "Messages/NoAck", "Messages/Second", @messages_noacked.process(statistics.fetch("message_stats").fetch("get_no_ack"))
 
-
         response = conn.get("/api/queues")
         statistics = response.body
+        p statistics.inspect
         statistics.each do |q|
             next if q['name'].start_with?('amq.gen')
-            report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Messages/Ready', 'message', q.fetch("messages_ready")
+            # report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Messages/Ready', 'message', q.fetch("messages_ready")
             report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Memory', 'bytes', q.fetch("memory")
             report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Messages/Total', 'message', q.fetch("messages")
             report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Consumers/Total', 'consumers', q.fetch("consumers")
