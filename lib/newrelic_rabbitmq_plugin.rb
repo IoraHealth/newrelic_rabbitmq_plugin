@@ -15,7 +15,7 @@ module NewrelicRabbitmqPlugin
       name || "#{u.host}:#{u.port}"
     end
 
-    def setup_metrics
+    def setup_metrics_a
       @messages_published = NewRelic::Processor::EpochCounter.new
       @messages_acked = NewRelic::Processor::EpochCounter.new
       @messages_delivered = NewRelic::Processor::EpochCounter.new
@@ -24,6 +24,27 @@ module NewrelicRabbitmqPlugin
       @messages_noacked = NewRelic::Processor::EpochCounter.new
       @bytes_in = NewRelic::Processor::EpochCounter.new
       @bytes_out = NewRelic::Processor::EpochCounter.new
+    end
+
+    def queue_name(q)
+      q.fetch("vhost") + q.fetch("name")
+    end
+
+    def setup_metrics_queues
+        response = conn.get("/api/queues")
+        statistics = response.body
+    end
+
+    def setup_metrics
+      setup_metrics_a
+      setup_metrics_queues
+      statistics.each do |q|
+        next if q['name'].start_with?('amq.gen')
+        message_stats.each do |name, value| 
+          next if name.end_with?("_details")
+          instance_variable_set("@#{queue_name(q)}_#{name}", NewRelic::Processor::EpochCounter.new) 
+        end
+      end
     end
 
     def poll_cycle
@@ -35,8 +56,7 @@ module NewrelicRabbitmqPlugin
         response = conn.get("/api/overview")
 
         statistics = response.body
-        puts JSON.pretty_generate(statistics).gsub(":", " =>")
-
+        # puts JSON.pretty_generate(statistics).gsub(":", " =>")
         report_metric_check_debug "Queues/Queued", "Messages", statistics.fetch("queue_totals").fetch("messages")
         report_metric_check_debug "Queues/Ready", "Messages", statistics.fetch("queue_totals").fetch("messages_ready")
         report_metric_check_debug "Queues/Unacknowledged", "Messages", statistics.fetch("queue_totals").fetch("messages_unacknowledged")
@@ -48,25 +68,25 @@ module NewrelicRabbitmqPlugin
         report_metric_check_debug "Messages/Publish", "Messages/Second", @messages_published.process(statistics.fetch("message_stats").fetch("publish"))
         report_metric_check_debug "Messages/Ack", "Messages/Second", @messages_acked.process(statistics.fetch("message_stats").fetch("ack"))
         report_metric_check_debug "Messages/Deliver", "Messages/Second", @messages_delivered.process(statistics.fetch("message_stats").fetch("deliver_get"))
-        # report_metric_check_debug "Messages/Confirm", "Messages/Second", @messages_confirmed.process(statistics.fetch("message_stats").fetch("confirm"))
-        # report_metric_check_debug "Message Rate/Return", "Messages/Second", @messages_confirmed.process(statistics.fetch("message_stats").fetch("return_unroutable")) 
         report_metric_check_debug "Messages/Redeliver", "Messages/Second", @messages_redelivered.process(statistics.fetch("message_stats").fetch("redeliver"))
-        # report_metric_check_debug "Messages/NoAck", "Messages/Second", @messages_noacked.process(statistics.fetch("message_stats").fetch("get_no_ack"))
 
         response = conn.get("/api/queues")
         statistics = response.body
-        puts JSON.pretty_generate(statistics).gsub(":", " =>")
+        # puts JSON.pretty_generate(statistics).gsub(":", " =>")
         statistics.each do |q|
             next if q['name'].start_with?('amq.gen')
-            # report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Messages/Ready', 'message', q.fetch("messages_ready")
-            report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Memory', 'bytes', q.fetch("memory")
-            report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Messages/Total', 'message', q.fetch("messages")
-            report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Consumers/Total', 'consumers', q.fetch("consumers")
-            report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Consumers/Active', 'consumers', q.fetch("active_consumers")
-          end
+            thisname = queue_name(q)
+            report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Memory', 'bytes', q.fetch("memory",0) 
+            report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Consumers/Total', 'consumers', q.fetch("consumers",0) 
+            report_metric_check_debug "Messages#{thisname}/Ack", "Messages/Second",           instance_variable_get("@#{thisname}_#{name}").process(q.fetch("message_stats",0).fetch("ack",0))
+            report_metric_check_debug "Messages#{thisname}/DeliverGet", "Messages/Second", instance_variable_get("@#{thisname}_#{name}").process(q.fetch("message_stats",0).fetch("deliver",0))
+            report_metric_check_debug "Messages#{thisname}/Deliver", "Messages/Second",      instance_variable_get("@#{thisname}_#{name}").process(q.fetch("message_stats",0).fetch("deliver_get",0))
+            report_metric_check_debug "Messages#{thisname}/Publish", "Messages/Second",      instance_variable_get("@#{thisname}_#{name}").process(q.fetch("message_stats",0).fetch("publish",0))
+        end
 
         response = conn.get("/api/nodes")
         statistics = response.body
+        # puts JSON.pretty_generate(statistics).gsub(":", " =>")
         statistics.each do |node|
           report_metric_check_debug "Node/MemoryUsage/#{node.fetch("name")}", "Percentage", (node.fetch("mem_used").to_f / node.fetch("mem_limit"))
           report_metric_check_debug "Node/ProcUsage/#{node.fetch("name")}", "Percentage", (node.fetch("proc_used").to_f / node.fetch("proc_total"))
