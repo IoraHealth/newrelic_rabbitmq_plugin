@@ -27,7 +27,7 @@ module NewrelicRabbitmqPlugin
     end
 
     def queue_name(q)
-      q.fetch("vhost") + q.fetch("name")
+      q.fetch("name")
     end
 
     def setup_metrics_queues
