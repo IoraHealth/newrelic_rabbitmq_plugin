@@ -10,7 +10,7 @@ module NewrelicRabbitmqPlugin
     agent_guid "com.iora.newrelic_plugin.rabbitmq"
     agent_version NewrelicRabbitmqPlugin::VERSION
     agent_config_options :name, :uri, :debug
-    agent_human_labels("RabbitMQ") do
+    agent_human_labels("rabbitmq") do
       u = ::URI.parse(uri)
       name || "#{u.host}:#{u.port}"
     end
