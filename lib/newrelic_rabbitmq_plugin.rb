@@ -33,18 +33,18 @@ module NewrelicRabbitmqPlugin
     def setup_metrics_queues
         response = conn.get("/api/queues")
         statistics = response.body
-    end
-
-    def setup_metrics
-      setup_metrics_a
-      setup_metrics_queues
-      statistics.each do |q|
+        statistics.each do |q|
         next if q['name'].start_with?('amq.gen')
         message_stats.each do |name, value| 
           next if name.end_with?("_details")
           instance_variable_set("@#{queue_name(q)}_#{name}", NewRelic::Processor::EpochCounter.new) 
         end
       end
+    end
+
+    def setup_metrics
+      setup_metrics_a
+      setup_metrics_queues
     end
 
     def poll_cycle
