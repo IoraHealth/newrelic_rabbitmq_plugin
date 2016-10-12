@@ -73,13 +73,9 @@ module NewrelicRabbitmqPlugin
             thisname =  q.fetch("name")
             report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Memory', 'bytes', q.fetch("memory",0) 
             report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Consumers/Total', 'consumers', q.fetch("consumers",0)
-            puts "one"
             report_metric_check_debug "Messages_#{thisname}/Ack", "Messages/Second",           instance_variable_get("@#{thisname}_ack").process(q.fetch("message_stats",0).fetch("ack",0))
-            puts "two"
             report_metric_check_debug "Messages_#{thisname}/DeliverGet", "Messages/Second", instance_variable_get("@#{thisname}_deliver_get").process(q.fetch("message_stats",0).fetch("deliver_get",0))
-            puts "three"
             report_metric_check_debug "Messages_#{thisname}/Deliver", "Messages/Second",      instance_variable_get("@#{thisname}_deliver").process(q.fetch("message_stats",0).fetch("deliver",0))
-            puts "four"
             report_metric_check_debug "Messages_#{thisname}/Publish", "Messages/Second",      instance_variable_get("@#{thisname}_publish").process(q.fetch("message_stats",0).fetch("publish",0))
         end
 
