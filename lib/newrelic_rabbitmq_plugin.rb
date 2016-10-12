@@ -37,8 +37,8 @@ module NewrelicRabbitmqPlugin
         next if q['name'].start_with?('amq.gen')
         q.fetch('message_stats',{}).each do |name, value| 
           next if name.end_with?("_details")
-          puts "@#{queue_name(q)}_==#{name}"
-          # instance_variable_set("@#{queue_name(q)}_#{name}", NewRelic::Processor::EpochCounter.new) 
+          # puts "@#{queue_name(q)}_==#{name}"
+          instance_variable_set("@#{queue_name(q)}_#{name}", NewRelic::Processor::EpochCounter.new) 
         end
       end
     end
@@ -79,10 +79,10 @@ module NewrelicRabbitmqPlugin
             thisname = queue_name(q)
             report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Memory', 'bytes', q.fetch("memory",0) 
             report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Consumers/Total', 'consumers', q.fetch("consumers",0) 
-            report_metric_check_debug "Messages_#{thisname}/Ack", "Messages/Second",           instance_variable_get("@#{thisname}_#{name}").process(q.fetch("message_stats",0).fetch("ack",0))
-            report_metric_check_debug "Messages_#{thisname}/DeliverGet", "Messages/Second", instance_variable_get("@#{thisname}_#{name}").process(q.fetch("message_stats",0).fetch("deliver",0))
-            report_metric_check_debug "Messages_#{thisname}/Deliver", "Messages/Second",      instance_variable_get("@#{thisname}_#{name}").process(q.fetch("message_stats",0).fetch("deliver_get",0))
-            report_metric_check_debug "Messages_#{thisname}/Publish", "Messages/Second",      instance_variable_get("@#{thisname}_#{name}").process(q.fetch("message_stats",0).fetch("publish",0))
+            # report_metric_check_debug "Messages_#{thisname}/Ack", "Messages/Second",           instance_variable_get("@#{thisname}_#{name}").process(q.fetch("message_stats",0).fetch("ack",0))
+            # report_metric_check_debug "Messages_#{thisname}/DeliverGet", "Messages/Second", instance_variable_get("@#{thisname}_#{name}").process(q.fetch("message_stats",0).fetch("deliver",0))
+            # report_metric_check_debug "Messages_#{thisname}/Deliver", "Messages/Second",      instance_variable_get("@#{thisname}_#{name}").process(q.fetch("message_stats",0).fetch("deliver_get",0))
+            # report_metric_check_debug "Messages_#{thisname}/Publish", "Messages/Second",      instance_variable_get("@#{thisname}_#{name}").process(q.fetch("message_stats",0).fetch("publish",0))
         end
 
         response = conn.get("/api/nodes")
