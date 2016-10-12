@@ -26,19 +26,13 @@ module NewrelicRabbitmqPlugin
       @bytes_out = NewRelic::Processor::EpochCounter.new
     end
 
-    def queue_name(q)
-      q.fetch("name")
-    end
-
     def setup_metrics_queues
-        response = conn.get("/api/queues")
-        statistics = response.body
-        statistics.each do |q|
+      response = conn.get("/api/queues")
+      statistics = response.body
+      statistics.each do |q|
         next if q['name'].start_with?('amq.gen')
-        q.fetch('message_stats',{}).each do |name, value| 
-          next if name.end_with?("_details")
-          # puts "@#{queue_name(q)}_==#{name}"
-          instance_variable_set("@#{queue_name(q)}_#{name}", NewRelic::Processor::EpochCounter.new) 
+        %w{ack deliver_get deliver publish}.each do |x|
+          instance_variable_set("@#{q['name']}_#{x}", NewRelic::Processor::EpochCounter.new) 
         end
       end
     end
@@ -76,12 +70,16 @@ module NewrelicRabbitmqPlugin
         puts JSON.pretty_generate(statistics).gsub(":", " =>")
         statistics.each do |q|
             next if q['name'].start_with?('amq.gen')
-            thisname =  queue_name(q)
+            thisname =  q.fetch("name")
             report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Memory', 'bytes', q.fetch("memory",0) 
-            report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Consumers/Total', 'consumers', q.fetch("consumers",0) 
+            report_metric_check_debug 'Queue' + q.fetch("vhost") + q.fetch("name") + '/Consumers/Total', 'consumers', q.fetch("consumers",0)
+            puts "one"
             report_metric_check_debug "Messages_#{thisname}/Ack", "Messages/Second",           instance_variable_get("@#{thisname}_ack").process(q.fetch("message_stats",0).fetch("ack",0))
+            puts "two"
             report_metric_check_debug "Messages_#{thisname}/DeliverGet", "Messages/Second", instance_variable_get("@#{thisname}_deliver_get").process(q.fetch("message_stats",0).fetch("deliver_get",0))
+            puts "three"
             report_metric_check_debug "Messages_#{thisname}/Deliver", "Messages/Second",      instance_variable_get("@#{thisname}_deliver").process(q.fetch("message_stats",0).fetch("deliver",0))
+            puts "four"
             report_metric_check_debug "Messages_#{thisname}/Publish", "Messages/Second",      instance_variable_get("@#{thisname}_publish").process(q.fetch("message_stats",0).fetch("publish",0))
         end
 
