@@ -35,7 +35,7 @@ module NewrelicRabbitmqPlugin
         statistics = response.body
         statistics.each do |q|
         next if q['name'].start_with?('amq.gen')
-        message_stats.each do |name, value| 
+        q.fetch('message_stats',{}).each do |name, value| 
           next if name.end_with?("_details")
           instance_variable_set("@#{queue_name(q)}_#{name}", NewRelic::Processor::EpochCounter.new) 
         end
