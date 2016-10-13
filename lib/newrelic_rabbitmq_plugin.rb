@@ -67,7 +67,7 @@ module NewrelicRabbitmqPlugin
 
         response = conn.get("/api/queues")
         statistics = response.body
-        puts JSON.pretty_generate(statistics).gsub(":", " =>")
+        # puts JSON.pretty_generate(statistics).gsub(":", " =>")
         statistics.each do |q|
             next if q['name'].start_with?('amq.gen')
             thisname =  q.fetch("name")
